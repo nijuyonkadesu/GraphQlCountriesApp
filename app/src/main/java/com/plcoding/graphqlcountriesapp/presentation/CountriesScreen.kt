@@ -6,13 +6,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -22,8 +24,10 @@ import com.plcoding.graphqlcountriesapp.domain.SimpleCountry
 @Composable
 fun CountriesScreen(
     state: CountriesViewModel.CountryState,
+    searchState: CountriesViewModel.SearchState,
     onSelectCountry: (code: String) -> Unit,
     onDismissCountryDialog: () -> Unit,
+    onSearchCountry: (searchKey: String) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if(state.isLoading){
@@ -31,17 +35,26 @@ fun CountriesScreen(
                 modifier = Modifier.align(Alignment.Center)
             )
         } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                items(state.countries) { country ->
-                    CountryItem(
-                        country = country,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onSelectCountry(country.code) }
-                            .padding(16.dp)
-                    )
+            Column {
+                SearchBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    searchState = searchState,
+                    onValueChange = onSearchCountry
+                )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    items(state.countries) { country ->
+                        CountryItem(
+                            country = country,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onSelectCountry(country.code) }
+                                .padding(16.dp)
+                        )
+                    }
                 }
             }
             if (state.selectedCountry != null){
@@ -56,6 +69,25 @@ fun CountriesScreen(
             }
         }
     }
+}
+@Composable
+fun SearchBar(
+    modifier: Modifier = Modifier,
+    searchState: CountriesViewModel.SearchState,
+    onValueChange: (searchKey: String) -> Unit,
+) {
+//    Row(
+//        modifier = modifier
+//    ){
+//        Icon(Icons.Outlined.Search, null)
+//        Spacer(modifier = modifier.width(16.dp))
+        OutlinedTextField(
+            modifier = modifier,
+            value = searchState.searchKey ?: "",
+            placeholder = { Text(text = "Search") },
+            onValueChange = onValueChange,
+        )
+//    }
 }
 
 @Composable

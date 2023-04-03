@@ -2,10 +2,7 @@ package com.plcoding.graphqlcountriesapp.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.plcoding.graphqlcountriesapp.domain.DetailedCountry
-import com.plcoding.graphqlcountriesapp.domain.GetCountriesUseCase
-import com.plcoding.graphqlcountriesapp.domain.GetCountryUseCase
-import com.plcoding.graphqlcountriesapp.domain.SimpleCountry
+import com.plcoding.graphqlcountriesapp.domain.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,10 +13,13 @@ import javax.inject.Inject
 class CountriesViewModel @Inject constructor(
     private val getCountriesUseCase: GetCountriesUseCase,
     private val getCountryUseCase: GetCountryUseCase,
+    private val getCountriesBySearchUseCase: GetCountriesBySearchUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow(CountryState())
     val state = _state.asStateFlow()
+
+    val searchState = MutableStateFlow(SearchState())
 
     init {
         viewModelScope.launch {
@@ -41,6 +41,21 @@ class CountriesViewModel @Inject constructor(
         }
     }
 
+    fun searchCountry(searchKey: String?) {
+        viewModelScope.launch {
+            searchState.update {
+                it.copy(
+                    searchKey = searchKey
+                )
+            }
+            _state.update {
+                it.copy(
+                    countries = getCountriesBySearchUseCase.execute(searchState.value.searchKey)
+                )
+            }
+        }
+    }
+
     fun dismissCountryDialog() {
         _state.update { it.copy(
             selectedCountry = null
@@ -51,5 +66,8 @@ class CountriesViewModel @Inject constructor(
         val countries: List<SimpleCountry> = emptyList(),
         val isLoading: Boolean = false,
         val selectedCountry: DetailedCountry? = null,
+    )
+    data class SearchState(
+        var searchKey: String? = null,
     )
 }

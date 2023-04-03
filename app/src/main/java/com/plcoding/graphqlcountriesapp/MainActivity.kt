@@ -26,10 +26,13 @@ class MainActivity : ComponentActivity() {
             GraphQlCountriesAppTheme {
                 val viewModel = hiltViewModel<CountriesViewModel>()
                 val state by viewModel.state.collectAsState()
+                val searchState by viewModel.searchState.collectAsState()
                 CountriesScreen(
                     state = state,
+                    searchState = searchState,
                     onSelectCountry = viewModel::selectCountry,
                     onDismissCountryDialog = viewModel::dismissCountryDialog,
+                    onSearchCountry = viewModel::searchCountry
                 )
             }
         }
