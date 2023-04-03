@@ -8,7 +8,7 @@ import com.plcoding.graphqlcountriesapp.domain.DetailedCountry
 import com.plcoding.graphqlcountriesapp.domain.SimpleCountry
 
 class ApolloCountryClient(
-    val apolloClient: ApolloClient
+    private val apolloClient: ApolloClient
 ): CountryClient {
 
     override suspend fun getCountries(): List<SimpleCountry> {

@@ -12,7 +12,7 @@ fun CountryQuery.Country.toDetailedCountry(): DetailedCountry {
         emoji = emoji,
         capital = capital ?: "No capital",
         currency = currency ?: "No currency",
-        languages = languages.mapNotNull { it.name },
+        languages = languages.map { it.name },
         continent = continent.name,
     )
 }

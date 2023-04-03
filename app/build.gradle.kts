@@ -73,8 +73,8 @@ dependencies {
     implementation("com.apollographql.apollo3:apollo-runtime:3.7.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
-    implementation("com.google.dagger:hilt-android:2.42")
-    kapt("com.google.dagger:hilt-android-compiler:2.42")
+    implementation("com.google.dagger:hilt-android:2.45")
+    kapt("com.google.dagger:hilt-android-compiler:2.45")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
